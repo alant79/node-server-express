@@ -3,7 +3,7 @@ module.exports.get = function (req, res) {
     const { msgslogin } = req.body;
     res.render('login', { msgslogin });
   } catch (err) {
-    return res.send(new Error(err));
+    console.log(err);
   }
 };
 
