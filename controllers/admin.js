@@ -3,15 +3,11 @@ const path = require('path');
 const productsPath = path.join(__dirname, '../temp/products.json');
 
 module.exports.get = function (req, res) {
+  const { msgskill, msgfile } = req.query;
   try {
-    const { msgskill, msgfile } = req.body;
-    if (req.session.isAuth) {
-      res.render('admin', { msgskill, msgfile });
-    } else {
-      res.redirect('/login');
-    }
+    res.render('admin', { msgskill, msgfile });
   } catch (err) {
-    return res.send(new Error(err));
+    res.render('error', { status: res.status, message: err });
   }
 };
 
@@ -22,7 +18,6 @@ module.exports.postEditSkills = function (req, res) {
     if (!age || !concerts || !cities || !years) {
       const err = 'All fields are required';
       res.render('admin', { msgskill: err });
-      console.log(err);
       return;
     }
     let newSkills = [];
@@ -45,7 +40,7 @@ module.exports.postEditSkills = function (req, res) {
     fs.writeFileSync(path.join(process.cwd(), '/temp/skills.json'), JSON.stringify(newSkills, '', 4));
     res.render('admin');
   } catch (err) {
-    console.log(err);
+    res.render('error', { status: res.status, message: err });
   }
 };
 
@@ -71,14 +66,12 @@ module.exports.postAddProduct = function (req, res) {
       // fs.unlinkSync(tempPath);
       err = 'All fields are required';
       res.render('admin', { msgfile: err });
-      console.log(err);
       return;
     }
     if (!photoName || !size) {
       // fs.unlinkSync(tempPath);
       err = 'File not saved';
       res.render('admin', { msgfile: err });
-      console.log(err);
       return;
     }
 
@@ -107,6 +100,6 @@ module.exports.postAddProduct = function (req, res) {
 
     res.render('admin');
   } catch (err) {
-    console.log(err);
+    res.render('error', { status: res.status, message: err });
   }
 };

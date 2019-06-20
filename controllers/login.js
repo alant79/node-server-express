@@ -1,9 +1,9 @@
 module.exports.get = function (req, res) {
   try {
-    const { msgslogin } = req.body;
+    const { msgslogin } = req.query;
     res.render('login', { msgslogin });
   } catch (err) {
-    console.log(err);
+    res.render('error', { status: res.status, message: err });
   }
 };
 
@@ -25,6 +25,6 @@ module.exports.post = function (req, res) {
     req.session.isAuth = true;
     res.redirect('/admin');
   } catch (err) {
-    console.log(err);
+    res.render('error', { status: res.status, message: err });
   }
 };
