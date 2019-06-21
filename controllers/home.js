@@ -5,7 +5,7 @@ const skillsPath = path.join(__dirname, '../temp/skills.json');
 
 module.exports.get = function (req, res) {
   try {
-    const { msgemail } = req.body;
+    const { msgemail } = req.query;
     let products = [];
     let skills = [];
     if (fs.existsSync(productsPath)) {
@@ -16,7 +16,8 @@ module.exports.get = function (req, res) {
     }
     res.render('index', { products, skills, msgemail });
   } catch (err) {
-    return res.send(new Error(err));
+    const status = 500;
+    res.status(status).render('error', { status, message: err });
   }
 };
 
@@ -33,12 +34,15 @@ module.exports.post = function (req, res) {
     }
     if (!name || !email) {
       const err = 'All fields are required';
-      res.render('index', { msgemail: err, products, skills });
+      const status = 400;
+      res.status(status).render('index', { msgemail: err, products, skills });
       return;
     }
+    // пока просто выведем в консоль
     console.log(name, email, message);
     res.render('index', { products, skills });
   } catch (err) {
-    return res.send(new Error(err));
+    const status = 500;
+    res.status(status).render('error', { status, message: err });
   }
 };
